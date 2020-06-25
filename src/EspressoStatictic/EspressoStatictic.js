@@ -31,8 +31,6 @@ export default class EspressoStatictic extends Component {
     good: 0,
     neutral: 0,
     bad: 0,
-    total: 0,
-    positiveFeedbacks: 0,
   };
 
   buttonClickHeadler = name => {
@@ -43,31 +41,14 @@ export default class EspressoStatictic extends Component {
     }, this.countTotalFeedback);
   };
 
-  countTotalFeedback = () => {
-    this.setState(prevState => {
-      return {
-        total: prevState.total + 1,
-      };
-    }, this.countPositiveFeedbackPercentage);
-  };
-
-  countPositiveFeedbackPercentage = () => {
-    const { total, good } = this.state;
-    // const total = this.state.total;
-    // const good = this.state.good;
-    const positiveFeedbacks = (good / total) * 100;
-    this.setState(() => {
-      return {
-        positiveFeedbacks: Math.floor(positiveFeedbacks * 100) / 100,
-      };
-    });
-  };
+  countTotalFeedback = () =>
+    Object.values(this.state).reduce((acc, val) => acc + val, 0);
 
   render() {
-    const { total } = this.state;
-    const statsNames = Object.keys(this.state).filter(
-      item => item !== 'total' && item !== 'positiveFeedbacks',
-    );
+    const { good } = this.state;
+    const total = this.countTotalFeedback();
+    const positiveFeedBack = Math.floor((good / total) * 100);
+    const statsNames = Object.keys(this.state);
 
     return (
       <Warapper>
@@ -85,9 +66,13 @@ export default class EspressoStatictic extends Component {
           })}
         </ButtonsUl>
         <StyledStatisticTitle>Statistic</StyledStatisticTitle>
-        {(total !== 0 && <Statistics statistic={this.state} />) || (
-          <Notification>No feedback given</Notification>
-        )}
+        {(total !== 0 && (
+          <Statistics
+            statistic={this.state}
+            total={total}
+            positiveFeedBack={positiveFeedBack}
+          />
+        )) || <Notification>No feedback given</Notification>}
       </Warapper>
     );
   }

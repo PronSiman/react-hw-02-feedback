@@ -12,7 +12,7 @@ const StatisticList = styled.ul`
   align-items: center;
 `;
 
-const Statistics = ({ statistic }) => {
+const Statistics = ({ statistic, total, positiveFeedBack }) => {
   const statsNames = Object.entries(statistic);
 
   return (
@@ -20,18 +20,20 @@ const Statistics = ({ statistic }) => {
       {statsNames.map(item => {
         return (
           <li key={item[0]}>
-            <span>{item[0]}:</span>{' '}
-            <span>
-              {item[1]}
-              {item[0] === 'positiveFeedbacks' ? '%' : ''}
-            </span>
+            <span>{item[0]}:</span> <span>{item[1]}</span>
           </li>
         );
       })}
+      <span>total: {total}</span>
+      <span>positive feedback: {positiveFeedBack} %</span>
     </StatisticList>
   );
 };
 Statistics.propTypes = {
-  statistic: propTypes.objectOf(propTypes.array).isRequired,
+  statistic: propTypes.objectOf(
+    propTypes.oneOfType([propTypes.string, propTypes.number]),
+  ).isRequired,
+  total: propTypes.number.isRequired,
+  positiveFeedBack: propTypes.number.isRequired,
 };
 export default Statistics;
